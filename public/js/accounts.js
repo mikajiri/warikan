@@ -50,6 +50,7 @@ $(document).on('click', '#btn-reg', function() {
         </div>
         `
         $('#register').append(html)
+        $('#btn-reg').prop('disabled', false)
         return
     }
     let cid = location.pathname.split('/').pop()
