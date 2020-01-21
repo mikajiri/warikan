@@ -94,7 +94,7 @@ $(document).on('click', '#viewmore', function() {
                 <td class="text-center align-middle">
                     ${row.payed 
                         ? '<div><i style="color: #28a745" class="fas fa-check fa-xs"></i></div>' 
-                        : `<div data-aid="${row.id}" class="btnpay"></div>`
+                        : `<div data-aid="${row.id}" class="btnpay border" style="height: 15px;"></div>`
                     }
                 </td>
             </tr>
@@ -143,7 +143,7 @@ function loadTable(limit = 10, offset = 0) {
                 <td class="text-center align-middle">
                     ${row.payed 
                         ? '<div><i style="color: #28a745" class="fas fa-check fa-xs"></i></div>' 
-                        : `<div data-aid="${row.id}" class="btnpay border"></div>`
+                        : `<div data-aid="${row.id}" class="btnpay border" style="height: 15px;"></div>`
                     }
                 </td>
             </tr>
