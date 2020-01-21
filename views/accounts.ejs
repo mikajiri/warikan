@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>わりかんくん</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+        <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+        <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+        <script src="/js/accounts.js"></script>
+        <style>
+            #tbl-main td {
+                font-size: 0.8em;
+            }
+
+            #tbl-main td:nth-child(1) {
+                width: 3em;
+            }
+            #tbl-main td:nth-child(3) {
+                width: 5.5em;
+            }
+            #tbl-main td:nth-child(5) {
+                width: 3em;
+            }
+            /* #tbl-main tbody tr:nth-child(odd) {
+                background-color: #f5f5f5;
+            } */
+            #tbl-main thead {
+                background-color: #6a6a6a;
+            }
+            button {
+                background-color: transparent;
+            }
+            i {
+                color: #f5f5f5;
+            }
+
+            #tbl-wrap {
+                overflow-y: scroll;
+                height: 500px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row" id="header">
+                <div class="badge">
+                    <img src="/img/saif.png" alt="" height="30px"> <span class="text-default"> <%= name %></span> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 text-right" id="summary"></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 text-right" id="btn-summary-wrap" style="margin-top: 0.5em;">    
+                </div>
+            </div>
+            <hr>
+            <div id="register">
+                <form class="form">
+                    <div class="row">
+                        <div class="col">
+                            <input type="text" class="form-control form-control-sm" id="reg-item-name" placeholder="品名">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col mt-2">
+                            <input type="number" class="form-control form-control-sm" id="reg-item-price" placeholder="金額">
+                        </div>
+                    </div>
+                </form>
+                <div class="row">
+                    <div class="col col-xs-2 mt-3">
+                        <button id="btn-reg" class="form-control form-control-sm btn btn-primary">登録</button>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-12">
+                    <form class="form-inline">
+                        <div class="custom-control custom-checkbox col">
+                            <input type="checkbox" class="custom-control-input form-check-inline cb-filter" id="cb-filter-unpayed">
+                            <label class="custom-control-label" for="cb-filter-unpayed">未精算のみ</label>
+                        </div>
+                        <div class="custom-control custom-checkbox col">
+                            <input type="checkbox" class="custom-control-input form-check-inline cb-filter" id="cb-filter-self">
+                            <label class="custom-control-label" for="cb-filter-self">自分のみ</label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="tbl-wrap" class="table-responsive mt-3">
+                <table id="tbl-main" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="text-center"><i class="fas fa-user"></i></th>
+                            <th class="text-center"><i class="fas fa-shopping-cart"></i></th>
+                            <th class="text-center"><i class="fas fa-clock"></i></th>
+                            <th class="text-center"><i class="fas fa-yen-sign"></i></th>
+                            <th class="text-center"><i class="fas fa-check"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+                <div class="text-center">
+                    <div class="mt-1 mb-3" id="viewmore">
+                        <i class="fas fa-caret-down" style="color:#757272;"></i>
+                        もっと見る
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
