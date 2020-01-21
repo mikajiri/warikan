@@ -30,7 +30,7 @@ $(document).on('click', '#btn-payall', function() {
 })
 
 $(document).on('click', '#btn-reg', function() {
-    let rownum = currentRowNum()
+    let rownum = Math.max(currentRowNum(), 10)
     $('#btn-reg').prop('disabled', true)
     let item = $('#reg-item-name').val()
     let price = parseInt($('#reg-item-price').val())
