@@ -19,7 +19,6 @@ $(document).on('click', '.btnpay', function() {
             .fail((xhr, status) => {
                 if (status === 'timeout' && retry < 3) {
                     retry++
-                    console.log(xhr)
                     countFailed(retry)
                     return req()
                 }
@@ -198,18 +197,14 @@ function loadTable(limit = 10, offset = 0) {
                 $('#tbl-main > tbody').append(html)
             }
             // summary
-            console.log(me)
-            console.log(data)
             let myTotal = data
                     .filter(x => x.creditorId == me && x.payed == 0)
                     .map(x => x.price)
                     .reduce((a, c) => parseInt(a) + parseInt(c), 0)
-            console.log(`my: ${myTotal}`)
             let otherTotal = data
                     .filter(x => x.creditorId != me && x.payed == 0)
                     .map(x => x.price)
                     .reduce((a, c) => parseInt(a) + parseInt(c), 0)
-            console.log(`other: ${otherTotal}`)
     
             if (myTotal > otherTotal) {
                 $('#summary').html(`<span class="text-primary">+¥${myTotal - otherTotal}</span>`)
