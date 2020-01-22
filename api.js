@@ -1,15 +1,5 @@
-var Datastore = require('nedb');
-var db = {};
-
-db.accounts = new Datastore({
-    filename: './ds/accounts.db'
-});
-db.users = new Datastore({
-    filename: './ds/users.db'
-})
-
-db.accounts.loadDatabase()
-db.users.loadDatabase()
+var sqlite = require('sqlite3').verbose();                                          
+var db = new sqlite.Database('ds/warikan.db');
 
 exports.registerItem = function (req, res) {
     let _item = req.body.item
@@ -17,63 +7,63 @@ exports.registerItem = function (req, res) {
     let _price = req.body.price
     let _dt = new Date()
 
-    db.accounts.insert({
-        creditorId: _creditorId,
-        price: _price,
-        item: _item,
-        payed: false,
-        purchasedAt: _dt,
-        payedAt: null
-    }, (e, doc) => {
-        res.send(doc)
+    db.serialize(function() {
+        let sql = `
+            INSERT INTO
+                accounts
+            VALUES (
+                null,
+                ?,
+                ?,
+                ?,
+                0,
+                ?,
+                null
+            )
+        `
+        let stmt = db.prepare(sql)
+        stmt.run([_creditorId, _item, _price, datetostr(_dt)])
+        stmt.finalize()
+        res.send({})
     })
 }
 
 exports.deleteItem = function(req, res) {
-    const query = { '_id': req.params.id }
-    db.accounts.remove(query, {}, (error, numOfDocs) => {
-        if (error) {
-            res.send(error)
-        } else {
-            res.send({num: numOfDocs})
-        }
-    })
+    res.send({})
 }
 
 exports.markItemAsPayed = function(req, res) {
-    const query = { _id: req.params.id };
-    const _dt = new Date()
-    const update = {
-        $set: { 
-            payed: true,
-            payedAt: _dt
-        }
-    };
-    db.accounts.update(query, update, {}, (error, numOfDocs) => {
-        if (error) {
-            res.send(error)
-        } else {
-            res.send({num: numOfDocs})
-        }
-    });
+    db.serialize(function() {
+        let sql = `
+            UPDATE
+                accounts
+            SET
+                payed = 1,
+                payed_at = ?
+            WHERE
+                id = ?
+        `
+        let stmt = db.prepare(sql)
+        stmt.run([datetostr(new Date()), req.params.id])
+        stmt.finalize()
+        res.send({})
+    })
 }
 
 exports.markItemAsPayedAll = function(req, res) {
-    const query = { payed: false };
-    const _dt = new Date()
-    const update = {
-        $set: { 
-            payed: true,
-            payedAt: _dt
-        }
-    };
-    db.accounts.update(query, update, {multi: true}, (error, numOfDocs) => {
-        if (error) {
-            res.send(error)
-        } else {
-            res.send({num: numOfDocs})
-        }
-    });
+    db.serialize(function() {
+        let sql = `
+            UPDATE
+                accounts
+            SET
+                payed = 1,
+                payed_at = ?
+        `
+        let stmt = db.prepare(sql)
+        stmt.run([datetostr(new Date()), req.params.id])
+        stmt.finalize()
+    })
+    res.send({})
 }
 
 exports.listItems = function(req, res) {
@@ -89,28 +79,32 @@ exports.listItems = function(req, res) {
     } else {
         offset = parseInt(offset)
     }
-    limit += offset
-    let users = db.users.getAllData()
-    let userMap = {}
-    for (let u of users) {
-        userMap[u._id] = u.name
-    }
-    let resp = db.accounts.getAllData().map(account => {
-        return {
-            id: account._id,
-            creditorId: account.creditorId,
-            creditor: userMap[account.creditorId],
-            item: account.item,
-            price: account.price,
-            payed: account.payed,
-            purchasedAt: datetostr(account.purchasedAt, 'M月D日'),
-            sk: account.purchasedAt.getTime()
-        }
+
+    db.serialize(function() {
+        let sql = `
+            SELECT
+                a.id id,
+                a.item item,
+                a.price price,
+                a.payed payed,
+                a.purchased_at purchasedAt,
+                u.id creditorId,
+                u.name creditor
+            FROM
+                users u
+                LEFT JOIN
+                    accounts a
+                ON
+                    u.id = a.creditor_id
+            ORDER BY
+                a.id DESC
+            LIMIT ? OFFSET ?
+        `
+        let stmt = db.prepare(sql)
+        stmt.all([limit, offset], (err, rows) => {
+            res.send(rows.filter(x => x.id))
+        })
     })
-    resp.sort(function(a, b) {
-        return b.sk - a.sk
-    })
-    res.send(resp.slice(offset, limit))
 }
 
 exports.listUsers = function(req, res) {
@@ -123,7 +117,7 @@ function datetostr(date, format, is12hours=false) {
     }
     var weekday = ["日", "月", "火", "水", "木", "金", "土"];
     if (!format) {
-        format = 'YYYY/MM/DD'
+        format = 'YYYY-MM-DD hh:mm:ss'
     }
     var year = date.getFullYear();
     var month = (date.getMonth() + 1);

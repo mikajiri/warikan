@@ -1,10 +1,10 @@
-var Datastore = require('nedb');
-var users = new Datastore({
-    filename: './ds/users.db'
+var sqlite = require('sqlite3').verbose();                                          
+var db = new sqlite.Database('ds/warikan.db');
+
+db.serialize(function() {
+    let stmt = db.prepare("INSERT INTO users VALUES (null, 'み'), (null, 'も')")
+    stmt.run()
+    stmt.finalize()
 })
 
-users.loadDatabase()
-
-users.insert({name: 'み'})
-users.insert({name: 'も'})
-
+db.close()
